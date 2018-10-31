@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Sharing_Brovary</fullName>
+        <accessLevel>Edit</accessLevel>
+        <accountSettings>
+            <caseAccessLevel>None</caseAccessLevel>
+            <contactAccessLevel>Edit</contactAccessLevel>
+            <opportunityAccessLevel>None</opportunityAccessLevel>
+        </accountSettings>
+        <label>Sharing Brovary</label>
+        <sharedTo>
+            <roleAndSubordinates>Manager_3_level_Brovary</roleAndSubordinates>
+        </sharedTo>
+        <criteriaItems>
+            <field>BillingCity</field>
+            <operation>equals</operation>
+            <value>Brovary</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+</SharingRules>
