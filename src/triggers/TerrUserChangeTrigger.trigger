@@ -1,4 +1,4 @@
-trigger TerrUserChangeTrigger on TerrUser__c (after insert, after update, after delete, after undelete) {
+trigger TerrUserChangeTrigger on TerrUser__c (after insert, after update, after delete, before update, before insert) {
     if (Trigger.isAfter) {
         if (Trigger.isUpdate) {
             //            ActivityDataHandler.onAfterUpdate(Trigger.new, Trigger.oldMap);
@@ -8,8 +8,15 @@ trigger TerrUserChangeTrigger on TerrUser__c (after insert, after update, after 
             TerrUserChangeHandler.TerrUserAfterInsert(Trigger.new);
         }
         if (Trigger.isDelete) {
-            //            ActivityDataHandler.onAfterDelete(Trigger.old);
-            TerrUserChangeHandler.TerrUseronAfterDel(Trigger.old);
+            TerrUserChangeHandler.TerrUserOnAfterDel(Trigger.oldMap);
         }
     }
-}
+    if (Trigger.isBefore) {
+        if (Trigger.isUpdate){
+            TerrUserChangeHandler.noTwoTerrUserWithOneUser(Trigger.new,Trigger.oldMap);
+        }
+        if (Trigger.isInsert){
+            TerrUserChangeHandler.noTwoTerrUserWithOneUser(Trigger.new, new Map<Id, TerrUser__c> ());
+        }
+    }
+    }
