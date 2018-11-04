@@ -2,35 +2,13 @@
 <module type="salesforce.module" version="4">
   <component name="ComponentSet" allManaged="false">
     <type2Names>
-      <SFMetaTypeNamesState type="CUSTOM_APPLICATION">
-        <option name="myNames">
-          <set>
-            <option value="TerritoryManagment" />
-          </set>
-        </option>
-      </SFMetaTypeNamesState>
-      <SFMetaTypeNamesState type="CUSTOM_OBJECT">
-        <option name="myNames">
-          <set>
-            <option value="Account" />
-            <option value="AccountCleanInfo" />
-            <option value="AccountContactRole" />
-            <option value="Contact" />
-            <option value="ContactCleanInfo" />
-            <option value="Reference__c" />
-            <option value="TerrUser__c" />
-            <option value="Territory__c" />
-            <option value="User" />
-            <option value="UserProvisioningRequest" />
-          </set>
-        </option>
-      </SFMetaTypeNamesState>
       <SFMetaTypeNamesState type="APEX_TRIGGER" setAll="true" />
-      <SFMetaTypeNamesState type="CUSTOM_TAB" setAll="true" />
       <SFMetaTypeNamesState type="APEX_CLASS" setAll="true" />
       <SFMetaTypeNamesState type="ROLE" setAll="true" />
-      <SFMetaTypeNamesState type="SETTINGS" setAll="true" />
+      <SFMetaTypeNamesState type="CUSTOM_TAB" setAll="true" />
       <SFMetaTypeNamesState type="SHARING_RULES" setAll="true" />
+      <SFMetaTypeNamesState type="CUSTOM_OBJECT" setAll="true" />
+      <SFMetaTypeNamesState type="SETTINGS" setAll="true" />
     </type2Names>
     <components>
       <SFMetaComponentState type="ApexClass" chosen="true" isMajor="true" />

@@ -81,6 +81,7 @@
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
+        <columns>OBJECT_ID</columns>
         <columns>Territory_level__c</columns>
         <columns>Parent_territory__c</columns>
         <columns>OWNER.ALIAS</columns>
