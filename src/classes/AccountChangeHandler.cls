@@ -132,27 +132,60 @@ public class AccountChangeHandler {
         return checkDone;
     }
 
-    private static Map <Id, List<Territory__c>> getMapUsersWithTeritories(List <TerrUser__c> newTerrUser,
+//    private static Map <Id, List<Territory__c>> getMapUsersWithTeritories(List <TerrUser__c> newTerrUser,
+//                                                                          List <Id> terID) {
+//        Map <Id, Territory__c> terWithChildTerritories = new Map<Id, Territory__c>([
+//                SELECT Name,Territory_level__c, (SELECT Id,Name,Territory_level__c FROM Territory__r)
+//                FROM Territory__c
+//                WHERE Id IN : terID
+//        ]);
+//        Map <Id, Territory__c> terWithChildTerritoriesFirstLevel = new Map<Id, Territory__c>([
+//                SELECT Name,Territory_level__c
+//                FROM Territory__c
+//        ]);
+//        Map <Id, List<Territory__c>> getMapUsersWithTer = new Map<Id, List<Territory__c>>();
+//        for (TerrUser__c user : newTerrUser) {
+//            if (terWithChildTerritories.get(user.Territory__c).Territory_level__c != 1) {
+//                if (!getMapUsersWithTer.containsKey(user.Id)) {
+//                    getMapUsersWithTer.put(user.Id, terWithChildTerritories.get(user.Territory__c).Territory__r);
+//                } else getMapUsersWithTer.get(user.Id).addAll(
+//                        terWithChildTerritories.get(user.Territory__c).Territory__r);
+//            } else getMapUsersWithTer.put(user.Id, terWithChildTerritoriesFirstLevel.values());
+//        }
+//        return getMapUsersWithTer;
+//    }
+
+    private static Map <Id, List<Territory__c>> getMapUsersWithTeritories(List < TerrUser__c > newTerrUser,
                                                                           List <Id> terID) {
+        terID.addAll(getTerritoriesListChild(terID));
         Map <Id, Territory__c> terWithChildTerritories = new Map<Id, Territory__c>([
                 SELECT Name,Territory_level__c, (SELECT Id,Name,Territory_level__c FROM Territory__r)
                 FROM Territory__c
                 WHERE Id IN : terID
         ]);
-        Map <Id, Territory__c> terWithChildTerritoriesFirstLevel = new Map<Id, Territory__c>([
-                SELECT Name,Territory_level__c
-                FROM Territory__c
-        ]);
         Map <Id, List<Territory__c>> getMapUsersWithTer = new Map<Id, List<Territory__c>>();
         for (TerrUser__c user : newTerrUser) {
-            if (terWithChildTerritories.get(user.Territory__c).Territory_level__c != 1) {
-                if (!getMapUsersWithTer.containsKey(user.Id)) {
-                    getMapUsersWithTer.put(user.Id, terWithChildTerritories.get(user.Territory__c).Territory__r);
-                } else getMapUsersWithTer.get(user.Id).addAll(
-                        terWithChildTerritories.get(user.Territory__c).Territory__r);
-            } else getMapUsersWithTer.put(user.Id, terWithChildTerritoriesFirstLevel.values());
+            if (!getMapUsersWithTer.containsKey(user.Id)) {
+                getMapUsersWithTer.put(user.Id, terWithChildTerritories.get(user.Territory__c).Territory__r);
+            } else getMapUsersWithTer.get(user.Id).addAll(
+                    terWithChildTerritories.get(user.Territory__c).Territory__r);
         }
+        getTerritoriesWihChildSecondLevel(terWithChildTerritories, getMapUsersWithTer);
         return getMapUsersWithTer;
+    }
+
+    public static void getTerritoriesWihChildSecondLevel(Map <Id, Territory__c> terWithChildTerritories,
+                                                         Map <Id, List<Territory__c>> getMapUsersWithTer) {
+        for (Id userId : getMapUsersWithTer.keySet()) {
+            if (getMapUsersWithTer.values() != null && getMapUsersWithTer.values().size() > 0) {
+                for (List <Territory__c> listTer : getMapUsersWithTer.values()) {
+                    for (Territory__c ter : listTer) {
+                        getMapUsersWithTer.get(userId).addAll(
+                                terWithChildTerritories.get(ter.Id).Territory__r);
+                    }
+                }
+            }
+        }
     }
 
     private static void changeContactShare(List <Id> terID,
