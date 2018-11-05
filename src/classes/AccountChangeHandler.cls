@@ -71,7 +71,7 @@ public class AccountChangeHandler {
                 WHERE Territory__c IN : terIdNew
         ];
         changeAccountShare(newTriggerAccs, terrUsersNew, new Map<Id, TerrUser__c>(), terIdNew);
-        changeContactShare(terIdNew, terrUsersNew, new Map<Id, TerrUser__c>());
+//        changeContactShare(terIdNew, terrUsersNew, new Map<Id, TerrUser__c>());
     }
 
     private static void changeAccountShare(List<Account> accountList,
