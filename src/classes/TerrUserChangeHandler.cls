@@ -9,6 +9,52 @@ public class TerrUserChangeHandler {
         changeContactShare(terID, newTerrUser, oldMapTerrUser);
     }
 
+    public static void TerrUserAfterInsert(List < TerrUser__c > newTerrUser) {
+        System.debug('newTerrUser = ' + newTerrUser[0]);
+        List <Id> terID = getTerritoriesList(newTerrUser);
+        terID.addAll(getTerritoriesListChild(terID));
+        changeAccountShare(terID, newTerrUser, new Map<Id, TerrUser__c>());
+        changeContactShare(terID, newTerrUser, new Map<Id, TerrUser__c>());
+    }
+
+    public static void TerrUserOnAfterDel(Map<Id, TerrUser__c> oldMapTerrUser) {
+        List <Id> terID = getTerritoriesList(oldMapTerrUser.values());
+        terID.addAll(getTerritoriesListChild(terID));
+        changeAccountShare(terID, new List<TerrUser__c>(), oldMapTerrUser);
+        changeContactShare(terID, new List<TerrUser__c>(), oldMapTerrUser);
+    }
+
+    public static void noTwoTerrUserWithOneUser(List<TerrUser__c> newTerrUser) {
+        List <TerrUser__c> usersAll = [
+                SELECT Territory__c, Territory_User__c
+                FROM TerrUser__c
+        ];
+        List <Id> terID = getTerritoriesList(newTerrUser);
+        List <Id> terIDNew = getTerritoriesListChild(terID);
+        List <Id> terIDParent = getTerritoriesListParent(terID);
+        terIDNew.addAll(terIDParent);
+        Map <Id, TerrUser__c> usersWithChildTer = new Map<Id, TerrUser__c>([
+                SELECT Territory__c, Territory_User__c,Name
+                FROM TerrUser__c
+                WHERE Territory__r.Id IN :terIDNew
+        ]);
+        for (TerrUser__c user : usersAll) {
+            for (TerrUser__c newUser : newTerrUser) {
+                if (validTerrUser(user, newUser)
+                )
+                {
+                    throw new SObjectException('You couldn\'t have TWO same users on one territory');
+                }
+                for (TerrUser__c userOld : usersWithChildTer.values()) {
+                    if ((newUser.Territory_User__c == userOld.Territory_User__c) &&
+                            (newUser.Territory_User__c != null)) {
+                        throw new SObjectException('You couldn\'t have TWO same users on one territory');
+                    }
+                }
+            }
+        }
+    }
+
     private static void changeContactShare(List <Id> terID,
                                            List<TerrUser__c> newTerrUsers,
                                            Map<Id, TerrUser__c> oldMapTerrUser) {
@@ -176,21 +222,6 @@ public class TerrUserChangeHandler {
             }
         }
     }
-        //        Map <Id, Territory__c> terWithChildTerritoriesFirstLevel = new Map<Id, Territory__c>([
-        //                SELECT Name,Territory_level__c
-        //                FROM Territory__c
-        //        ]);
-        //
-        //        Map <Id, List<Territory__c>> getMapUsersWithTer = new Map<Id, List<Territory__c>>();
-        //        for (TerrUser__c user : newTerrUser) {
-        //            if (terWithChildTerritories.get(user.Territory__c).Territory_level__c != 1) {
-        //                if (!getMapUsersWithTer.containsKey(user.Id)) {
-        //                    getMapUsersWithTer.put(user.Id, terWithChildTerritories.get(user.Territory__c).Territory__r);
-        //                } else getMapUsersWithTer.get(user.Id).addAll(
-        //                        terWithChildTerritories.get(user.Territory__c).Territory__r);
-        //                //     }
-        //            } else getMapUsersWithTer.put(user.Id, terWithChildTerritoriesFirstLevel.values());
-        //        }
 
     private static List <Id> getTerritoriesListChild(List <id> listTerr) {
         List <Territory__c> terWithChildTerritories = [
@@ -214,21 +245,6 @@ public class TerrUserChangeHandler {
         return new List<Id>();
     }
 
-    public static void TerrUserAfterInsert(List < TerrUser__c > newTerrUser) {
-        System.debug('newTerrUser = ' + newTerrUser[0]);
-        List <Id> terID = getTerritoriesList(newTerrUser);
-        terID.addAll(getTerritoriesListChild(terID));
-        changeAccountShare(terID, newTerrUser, new Map<Id, TerrUser__c>());
-        changeContactShare(terID, newTerrUser, new Map<Id, TerrUser__c>());
-    }
-
-    public static void TerrUserOnAfterDel(Map<Id, TerrUser__c> oldMapTerrUser) {
-        List <Id> terID = getTerritoriesList(oldMapTerrUser.values());
-        terID.addAll(getTerritoriesListChild(terID));
-        changeAccountShare(terID, new List<TerrUser__c>(), oldMapTerrUser);
-        changeContactShare(terID, new List<TerrUser__c>(), oldMapTerrUser);
-    }
-
     public static void validationSave(List <Database.SaveResult> sres) {
         for (Database.SaveResult sr : sres) {
             if (!sr.isSuccess()) {
@@ -249,38 +265,6 @@ public class TerrUserChangeHandler {
         }
         System.debug('terID = ' + terID[0]);
         return terID;
-    }
-
-    public static void noTwoTerrUserWithOneUser(List<TerrUser__c> newTerrUser,
-                                                Map<Id, TerrUser__c> oldMapTerrUser) {
-        List <TerrUser__c> usersAll = [
-                SELECT Territory__c, Territory_User__c
-                FROM TerrUser__c
-        ];
-        List <Id> terID = getTerritoriesList(newTerrUser);
-        List <Id> terIDNew = getTerritoriesListChild(terID);
-        List <Id> terIDParent = getTerritoriesListParent(terID);
-        terIDNew.addAll(terIDParent);
-        Map <Id, TerrUser__c> usersWithChildTer = new Map<Id, TerrUser__c>([
-                SELECT Territory__c, Territory_User__c,Name
-                FROM TerrUser__c
-                WHERE Territory__r.Id IN :terIDNew
-        ]);
-        for (TerrUser__c user : usersAll) {
-            for (TerrUser__c newUser : newTerrUser) {
-                if (validTerrUser(user, newUser)
-                )
-                {
-                    throw new SObjectException('You couldn\'t have TWO same users on one territory');
-                }
-                for (TerrUser__c userOld : usersWithChildTer.values()) {
-                    if ((newUser.Territory_User__c == userOld.Territory_User__c) &&
-                            (newUser.Territory_User__c != null)) {
-                        throw new SObjectException('You couldn\'t have TWO same users on one territory');
-                    }
-                }
-            }
-        }
     }
 
     private static Boolean validTerrUser(TerrUser__c user, TerrUser__c newUser) {
