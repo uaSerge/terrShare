@@ -125,8 +125,6 @@ public static void referenceChangeAfterUpdate(List<Reference__c> newTriggerRefs,
         }
         Map <Id, List<Territory__c>> mapUsersWithTeritories = getMapUsersWithTeritories(newTerrUsers, terID);
         for (TerrUser__c terUser : newTerrUsers) {
-//            if ((oldMapTerrUser.size() == 0) || terUser.Territory_User__c == null||
-//                    (terUser.Territory_User__c != oldMapTerrUser.get(terUser.Id).Territory_User__c)) {
                 id newUser = terUser.Territory_User__c;
                 if (newUser != null) {
                     for (Contact cont : contactList) {
@@ -138,9 +136,7 @@ public static void referenceChangeAfterUpdate(List<Reference__c> newTriggerRefs,
                                                 ref.Account__r.Territory__c));
                             }
                         }
-                        if (canShare
-                               // || (oldMapTerrUser.size() == 0)&& (newTerrUsers.size() > 0)
-                                ) {
+                        if (canShare) {
                             ContactShare contShare = new ContactShare();
                             contShare.ContactId = cont.id;
                             contShare.UserOrGroupId = newUser;
@@ -150,7 +146,6 @@ public static void referenceChangeAfterUpdate(List<Reference__c> newTriggerRefs,
                         }
                     }
                 }
-          //  }
         }
         if (oldMapTerrUser.size() > 0) {
             delete oldContactShareList;
@@ -166,7 +161,6 @@ public static void referenceChangeAfterUpdate(List<Reference__c> newTriggerRefs,
         Boolean checkDone = false;
         if (territories != null) {
             for (Territory__c ter : territories) {
-
                 checkDone = (ter.Id == accountTerr);
                 if (checkDone) break;
             }

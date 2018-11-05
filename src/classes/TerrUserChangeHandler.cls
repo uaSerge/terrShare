@@ -167,37 +167,6 @@ public class TerrUserChangeHandler {
         }
         return getMapUsersWithTer;
     }
-        //        List <Territory__c> territoryChildren = new List<Territory__c>();
-        //        for (Territory__c ter : terWithChildTerritories.values()) {
-        //            territoryChildren.addAll(ter.Territory__r);
-        //        }
-        //        List <Id> terIDChildren = new List<Id>();
-        //        for (Territory__c t : territoryChildren) {
-        //            terIDChildren.add(t.Id);
-        //        }
-        //        Map <Id, Territory__c> terWithParentTerritories2level = new Map<Id, Territory__c>([
-        //                SELECT Name,Territory_level__c, (SELECT Name,Territory_level__c FROM Territory__r)
-        //                FROM Territory__c
-        //                WHERE Id IN : terIDChildren
-        //        ]);
-        //        for (TerrUser__c user : newTerrUser) {
-        //            for (Territory__c ter : terWithChildTerritories.values()) {
-        //                System.debug('getMapUsersWithTer.get(user.Id) ' + getMapUsersWithTer.get(user.Id));
-        //                if (getMapUsersWithTer.get(user.Id) == null) {
-        //                    getMapUsersWithTer.put(user.Id, ter.Territory__r);
-        //                } else getMapUsersWithTer.get(user.Id).add(ter);
-        //            }
-        //        }
-        //        for (TerrUser__c user : newTerrUser) {
-        //            for (Territory__c ter : terWithParentTerritories2level.values()) {
-        //                System.debug('getMapUsersWithTer.get(user.Id) ' + getMapUsersWithTer.get(user.Id));
-        //                if (getMapUsersWithTer.get(user.Id) == null) {
-        //                    getMapUsersWithTer.put(user.Id, ter.Territory__r);
-        //                } else getMapUsersWithTer.get(user.Id).add(ter);
-        //            }
-        //        }
-        //
-
 
     private static List <Id> getTerritoriesListChild(List <id> listTerr) {
         List <Territory__c> terWithChildTerritories = [

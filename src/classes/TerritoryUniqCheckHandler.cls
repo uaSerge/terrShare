@@ -19,7 +19,7 @@ public class TerritoryUniqCheckHandler {
     public static Boolean uniqCheckName(Territory__c terChildOld, Territory__c terChildNew) {
         return terChildOld.Parent_territory__c == terChildNew.Parent_territory__c &&
                         terChildOld.Name == terChildNew.Name &&
-            //            terChildOld.Territory_level__c == terChildNew.Territory_level__c &&
+            //          terChildOld.Territory_level__c == terChildNew.Territory_level__c &&
                         terChildOld.id != terChildNew.id;
     }
 }
