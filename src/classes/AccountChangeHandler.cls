@@ -132,7 +132,7 @@ public class AccountChangeHandler {
         return checkDone;
     }
 
-    private static Map <Id, List<Territory__c>> getMapUsersWithTeritories(List < TerrUser__c > newTerrUser,
+    private static Map <Id, List<Territory__c>> getMapUsersWithTeritories(List <TerrUser__c> newTerrUser,
                                                                           List <Id> terID) {
         Map <Id, Territory__c> terWithChildTerritories = new Map<Id, Territory__c>([
                 SELECT Name,Territory_level__c, (SELECT Id,Name,Territory_level__c FROM Territory__r)
@@ -150,7 +150,6 @@ public class AccountChangeHandler {
                     getMapUsersWithTer.put(user.Id, terWithChildTerritories.get(user.Territory__c).Territory__r);
                 } else getMapUsersWithTer.get(user.Id).addAll(
                         terWithChildTerritories.get(user.Territory__c).Territory__r);
-                //     }
             } else getMapUsersWithTer.put(user.Id, terWithChildTerritoriesFirstLevel.values());
         }
         return getMapUsersWithTer;
@@ -160,13 +159,11 @@ public class AccountChangeHandler {
                                            List<TerrUser__c> newTerrUsers,
                                            Map<Id, TerrUser__c> oldMapTerrUser) {
         List<ContactShare> contactShareListNew = new List<ContactShare>();
-        //    if (newTerrUsers.size() > 0) {
         List <Reference__c> referenceList = [
                 SELECT Name, Account__c, Contact__c, Account__r.Territory__c
                 FROM Reference__c
                 WHERE Account__r.Territory__c in : terID
         ];
-        //   }else List <Reference__c> referenceList = [];
         List <Id> contactId = new List<Id>();
         for (Reference__c r : referenceList) {
             contactId.add(r.Contact__c);
